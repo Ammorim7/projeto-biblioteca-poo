@@ -1,4 +1,4 @@
-import arvore.ArvoreAVL;
+import arvore.ArvoreAVLGeneric;
 import modelo.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.Scanner;
 import java.time.LocalDate;
 
 public class Main {
-    private static ArvoreAVL arvoreLivros = new ArvoreAVL();
-    // Armazenamento simples para as outras entidades (para fins de exemplo)
-    private static List<Usuario> usuarios = new ArrayList<>();
-    private static List<Autor> autores = new ArrayList<>();
-    private static List<Categoria> categorias = new ArrayList<>();
+    private static ArvoreAVLGeneric<modelo.Livro, String> arvoreLivros = new ArvoreAVLGeneric<>(modelo.Livro::getIsbn);
+    private static ArvoreAVLGeneric<modelo.Autor, Integer> arvoreAutores = new ArvoreAVLGeneric<>(modelo.Autor::getId);
+    // Estruturas para outras entidades
+    private static ArvoreAVLGeneric<modelo.Usuario, Integer> arvoreUsuarios = new ArvoreAVLGeneric<>(modelo.Usuario::getMatricula);
+    private static ArvoreAVLGeneric<modelo.Categoria, Integer> arvoreCategorias = new ArvoreAVLGeneric<>(modelo.Categoria::getId);
     private static List<Emprestimo> emprestimos = new ArrayList<>();
     
     private static Scanner scanner = new Scanner(System.in);
@@ -19,12 +19,12 @@ public class Main {
 
     public static void main(String[] args) {
         // --- População Inicial de Dados (para teste) ---
-        Autor a1 = new Autor(proximoIdAutor++, "Machado de Assis", "Brasileiro"); autores.add(a1);
-        Autor a2 = new Autor(proximoIdAutor++, "Clarice Lispector", "Brasileira"); autores.add(a2);
-        Categoria c1 = new Categoria(proximoIdCategoria++, "Clássico"); categorias.add(c1);
-        Categoria c2 = new Categoria(proximoIdCategoria++, "Ficção Científica"); categorias.add(c2);
-        usuarios.add(new Usuario(101, "Alice Silva", "alice@lib.com"));
-        usuarios.add(new Usuario(102, "Bruno Costa", "bruno@lib.com"));
+        Autor a1 = new Autor(proximoIdAutor++, "Machado de Assis", "Brasileiro"); arvoreAutores.inserir(a1);
+        Autor a2 = new Autor(proximoIdAutor++, "Clarice Lispector", "Brasileira"); arvoreAutores.inserir(a2);
+        Categoria c1 = new Categoria(proximoIdCategoria++, "Clássico"); arvoreCategorias.inserir(c1);
+        Categoria c2 = new Categoria(proximoIdCategoria++, "Ficção Científica"); arvoreCategorias.inserir(c2);
+        arvoreUsuarios.inserir(new Usuario(101, "Alice Silva", "alice@lib.com"));
+        arvoreUsuarios.inserir(new Usuario(102, "Bruno Costa", "bruno@lib.com"));
 
         arvoreLivros.inserir(new Livro("978-8578882746", "Dom Casmurro", 1899, a1, c1));
         arvoreLivros.inserir(new Livro("978-0199535729", "O Alienista", 1882, a1, c1));
@@ -50,10 +50,10 @@ public class Main {
             try {
                 opcao = Integer.parseInt(scanner.nextLine());
                 switch (opcao) {
-                    case 1: menuLivros(); break;
-                    case 2: System.out.println("Implementar CRUD de Usuários aqui..."); break; 
-                    case 3: System.out.println("Implementar CRUD de Autores aqui..."); break; 
-                    case 4: menuEmprestimos(); break;
+                        case 1: menuLivros(); break;
+                        case 2: menuUsuarios(); break; 
+                        case 3: menuAutores(); break; 
+                        case 4: menuEmprestimos(); break;
                     case 5: visualizarArvore(); break;
                     case 6: System.out.println("Saindo do sistema. Até logo!"); break;
                     default: System.out.println("Opção inválida.");
@@ -95,11 +95,12 @@ public class Main {
 
     private static void menuEmprestimos() {
         int opcao = -1;
-        while (opcao != 3) {
+        while (opcao != 4) {
             System.out.println("\n--- Gerenciar Empréstimos ---");
             System.out.println("1. Realizar Empréstimo");
             System.out.println("2. Devolver Livro");
-            System.out.println("3. Voltar");
+            System.out.println("3. Listar Empréstimos");
+            System.out.println("4. Voltar");
             System.out.print("Escolha uma opção: ");
             
             try {
@@ -107,7 +108,8 @@ public class Main {
                 switch (opcao) {
                     case 1: realizarEmprestimo(); break;
                     case 2: devolverLivro(); break;
-                    case 3: break;
+                    case 3: listarEmprestimos(); break;
+                    case 4: break;
                     default: System.out.println("Opção inválida.");
                 }
             } catch (NumberFormatException e) {
@@ -134,12 +136,16 @@ public class Main {
         int ano = Integer.parseInt(scanner.nextLine());
 
         // Para simplificar, usamos o primeiro autor/categoria. O ideal seria uma busca/seleção.
-        if (autores.isEmpty() || categorias.isEmpty()) {
-             System.out.println("⚠️ Cadastre Autores e Categorias primeiro.");
-             return;
-        }
+          if (arvoreAutores.listarTodos().isEmpty() || arvoreCategorias.listarTodos().isEmpty()) {
+               System.out.println("⚠️ Cadastre Autores e Categorias primeiro.");
+               return;
+           }
 
-        arvoreLivros.inserir(new Livro(isbn, titulo, ano, autores.get(0), categorias.get(0)));
+              // Para simplicidade, usamos o primeiro autor e categoria disponíveis
+              Autor autorSelecionado = arvoreAutores.listarTodos().get(0);
+              Categoria categoriaSelecionada = arvoreCategorias.listarTodos().get(0);
+
+           arvoreLivros.inserir(new Livro(isbn, titulo, ano, autorSelecionado, categoriaSelecionada));
     }
     
     private static void buscarLivro() {
@@ -198,6 +204,197 @@ public class Main {
         arvoreLivros.visualizarEstrutura();
     }
 
+    // --- CRUD Autores (usando AVL) ---
+
+    private static void menuAutores() {
+        int opcao = -1;
+        while (opcao != 5) {
+            System.out.println("\n--- Gerenciar Autores (AVL) ---");
+            System.out.println("1. Inserir Autor (C)");
+            System.out.println("2. Listar Autores (R)");
+            System.out.println("3. Alterar Autor (U)");
+            System.out.println("4. Remover Autor (D)");
+            System.out.println("5. Voltar");
+            System.out.print("Escolha uma opção: ");
+
+            try {
+                opcao = Integer.parseInt(scanner.nextLine());
+                switch (opcao) {
+                    case 1: inserirAutor(); break;
+                    case 2: listarAutores(); break;
+                    case 3: alterarAutor(); break;
+                    case 4: removerAutor(); break;
+                    case 5: break;
+                    default: System.out.println("Opção inválida.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Digite um número.");
+            }
+        }
+    }
+
+    private static void inserirAutor() {
+        System.out.println("\n--- Inserir Autor ---");
+        System.out.print("Nome: ");
+        String nome = scanner.nextLine();
+        System.out.print("Nacionalidade: ");
+        String nacionalidade = scanner.nextLine();
+
+        Autor novo = new Autor(proximoIdAutor++, nome, nacionalidade);
+        arvoreAutores.inserir(novo);
+    }
+
+    private static void listarAutores() {
+        System.out.println("\n--- Lista de Autores ---");
+        for (Autor a : arvoreAutores.listarTodos()) {
+            System.out.println(a);
+        }
+    }
+
+    private static void alterarAutor() {
+        System.out.println("\n--- Alterar Autor ---");
+        System.out.print("ID do Autor: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        Autor autor = arvoreAutores.buscar(id);
+        if (autor == null) {
+            System.out.println("❌ Autor não encontrado.");
+            return;
+        }
+        System.out.print("Novo Nome (vazio para manter): ");
+        String nome = scanner.nextLine();
+        if (!nome.isEmpty()) {
+            arvoreAutores.remover(id);
+            Autor novo = new Autor(id, nome, autor.getNacionalidade());
+            arvoreAutores.inserir(novo);
+        }
+        System.out.print("Nova Nacionalidade (vazio para manter): ");
+        String nac = scanner.nextLine();
+        if (!nac.isEmpty()) {
+            arvoreAutores.remover(id);
+            Autor novo = new Autor(id, autor.getNome(), nac);
+            arvoreAutores.inserir(novo);
+        }
+        System.out.println("✅ Autor alterado (recriado). Consulte a lista.");
+    }
+
+    private static void removerAutor() {
+        System.out.println("\n--- Remover Autor ---");
+        System.out.print("ID do Autor a remover: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        arvoreAutores.remover(id);
+    }
+
+    // --- CRUD Categoria (lista simples) ---
+
+    private static void inserirCategoria() {
+        System.out.println("\n--- Inserir Categoria ---");
+        System.out.print("Nome: ");
+        String nome = scanner.nextLine();
+        Categoria c = new Categoria(proximoIdCategoria++, nome);
+        arvoreCategorias.inserir(c);
+        System.out.println("✅ Categoria inserida: " + c.getNome());
+    }
+
+    private static void listarCategorias() {
+        System.out.println("\n--- Lista de Categorias ---");
+        for (Categoria c : arvoreCategorias.listarTodos()) System.out.println(c);
+    }
+
+    private static void alterarCategoria() {
+        System.out.println("\n--- Alterar Categoria ---");
+        System.out.print("ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        Categoria cat = arvoreCategorias.buscar(id);
+        if (cat == null) { System.out.println("❌ Categoria não encontrada."); return; }
+        System.out.print("Novo Nome (vazio para manter): ");
+        String novo = scanner.nextLine();
+        if (!novo.isEmpty()) {
+            cat.setNome(novo);
+            System.out.println("✅ Categoria alterada.");
+        }
+    }
+
+    private static void removerCategoria() {
+        System.out.println("\n--- Remover Categoria ---");
+        System.out.print("ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        arvoreCategorias.remover(id);
+        System.out.println("✅ Se existia, categoria removida.");
+    }
+
+    // --- CRUD Usuários (lista simples) ---
+
+    private static void menuUsuarios() {
+        int opcao = -1;
+        while (opcao != 5) {
+            System.out.println("\n--- Gerenciar Usuários ---");
+            System.out.println("1. Inserir Usuário");
+            System.out.println("2. Listar Usuários");
+            System.out.println("3. Alterar Usuário");
+            System.out.println("4. Remover Usuário");
+            System.out.println("5. Voltar");
+            System.out.print("Escolha uma opção: ");
+            try {
+                opcao = Integer.parseInt(scanner.nextLine());
+                switch (opcao) {
+                    case 1: inserirUsuario(); break;
+                    case 2: listarUsuarios(); break;
+                    case 3: alterarUsuario(); break;
+                    case 4: removerUsuario(); break;
+                    case 5: break;
+                    default: System.out.println("Opção inválida.");
+                }
+            } catch (NumberFormatException e) { System.out.println("Entrada inválida."); }
+        }
+    }
+
+    private static void inserirUsuario() {
+        System.out.println("\n--- Inserir Usuário ---");
+        System.out.print("Matrícula (número): ");
+        int mat = Integer.parseInt(scanner.nextLine());
+        System.out.print("Nome: ");
+        String nome = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        arvoreUsuarios.inserir(new Usuario(mat, nome, email));
+        System.out.println("✅ Usuário cadastrado.");
+    }
+
+    private static void listarUsuarios() {
+        System.out.println("\n--- Lista de Usuários ---");
+        for (Usuario u : arvoreUsuarios.listarTodos()) System.out.println(u);
+    }
+
+    private static void alterarUsuario() {
+        System.out.println("\n--- Alterar Usuário ---");
+        System.out.print("Matrícula: ");
+        int mat = Integer.parseInt(scanner.nextLine());
+        Usuario u = arvoreUsuarios.buscar(mat);
+        if (u == null) { System.out.println("❌ Usuário não encontrado."); return; }
+        System.out.print("Novo Nome (vazio para manter): ");
+        String nome = scanner.nextLine();
+        System.out.print("Novo Email (vazio para manter): ");
+        String email = scanner.nextLine();
+        if (!nome.isEmpty()) u.setNome(nome);
+        if (!email.isEmpty()) u.setEmail(email);
+        System.out.println("✅ Usuário alterado.");
+    }
+
+    private static void removerUsuario() {
+        System.out.println("\n--- Remover Usuário ---");
+        System.out.print("Matrícula: ");
+        int mat = Integer.parseInt(scanner.nextLine());
+        arvoreUsuarios.remover(mat);
+        System.out.println("✅ Se existia, usuário removido.");
+    }
+
+    // --- Empréstimos adicionais ---
+
+    private static void listarEmprestimos() {
+        System.out.println("\n--- Empréstimos Registrados ---");
+        for (Emprestimo e : emprestimos) System.out.println(e);
+    }
+
     // --- Funções Gerenciamento de Empréstimos ---
 
     private static void realizarEmprestimo() {
@@ -208,7 +405,7 @@ public class Main {
         int matricula = Integer.parseInt(scanner.nextLine());
         
         Livro livro = arvoreLivros.buscar(isbn);
-        Usuario usuario = usuarios.stream().filter(u -> u.getMatricula() == matricula).findFirst().orElse(null);
+        Usuario usuario = arvoreUsuarios.buscar(matricula);
 
         if (livro == null || usuario == null) {
             System.out.println("❌ Livro ou Usuário não encontrado.");

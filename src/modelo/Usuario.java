@@ -15,6 +15,12 @@ public class Usuario {
     public int getMatricula() { return matricula; }
     public String getNome() { return nome; }
 
+    public String getEmail() { return email; }
+
+    // Setters
+    public void setNome(String nome) { this.nome = nome; }
+    public void setEmail(String email) { this.email = email; }
+
     @Override
     public String toString() {
         return "Matrícula: " + matricula + ", Nome: " + nome + ", Email: " + email;
