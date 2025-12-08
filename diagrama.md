@@ -1,3 +1,6 @@
+# Diagrama UML de Classes (Mermaid)
+
+```mermaid
 classDiagram
     %% Layout mais legível: de cima para baixo
     direction TB
