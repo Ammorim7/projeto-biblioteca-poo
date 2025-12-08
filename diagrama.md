@@ -2,28 +2,28 @@
 
 ```mermaid
 classDiagram
-    direction LR
+    %% Layout mais legível: de cima para baixo
+    direction TB
 
     class Livro {
         +String isbn
         +String titulo
         +int anoPublicacao
-        -boolean emprestado
-        +compareTo(Livro) int
-        +toString() String
+        +boolean emprestado
+        +toString()
     }
-    
+
     class Autor {
         +int id
         +String nome
         +String nacionalidade
     }
-    
+
     class Categoria {
         +int id
         +String nome
     }
-    
+
     class Usuario {
         +int matricula
         +String nome
@@ -31,32 +31,32 @@ classDiagram
     }
 
     class Emprestimo {
+        +Livro livro
+        +Usuario usuario
         +LocalDate dataEmprestimo
         +LocalDate dataDevolucaoPrevista
+        +toString()
     }
 
-    class NoAVLAutor {
-        +Autor dado
-        +NoAVLAutor esquerda
-        +NoAVLAutor direita
-        +int altura
-    }
-
-    class ArvoreAVLGeneric<T, K> {
+    class ArvoreAVLGeneric~T,K~ {
         -No raiz
-        +inserir(T)
-        +buscar(K) T
-        +remover(K)
-        +listarTodos()
+        +inserir(T item)
+        +buscar(K chave) T
+        +remover(K chave)
+        +listarTodos() List~T~
         +visualizarEstrutura()
     }
 
-    Livro "1" -- "1" NoAVL : contem
-    ArvoreAVL "1" -- "0..*" NoAVL : possui
-    Livro "1" -- "1" Autor : tem
-    Livro "1" -- "1" Categoria : pertence a
-    Emprestimo "0..*" -- "1" Livro : referencia
-    Emprestimo "0..*" -- "1" Usuario : realizado por
-    Main "1" --> "1" ArvoreAVLGeneric : gerencia estruturas
-    Main "1" --> "*" Usuario : gerencia
-    Main "1" --> "*" Emprestimo : gerencia
+    %% Relações principais
+    Livro --> Autor : autor
+    Livro --> Categoria : categoria
+    Emprestimo --> Livro : referencia
+    Emprestimo --> Usuario : realizado_por
+
+    %% Uso das árvores pelo Main (dependência)
+    Main ..> ArvoreAVLGeneric~Livro,String~ : usa
+    Main ..> ArvoreAVLGeneric~Autor,Integer~ : usa
+    Main ..> ArvoreAVLGeneric~Usuario,Integer~ : usa
+    Main ..> ArvoreAVLGeneric~Categoria,Integer~ : usa
+
+    %% Nota: a estrutura interna (nós) é representada dentro da implementação genérica, não detalhada aqui.
