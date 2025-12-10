@@ -9,7 +9,6 @@ public class Categoria {
         this.nome = nome;
     }
 
-    // Getters
     public int getId() { return id; }
     public String getNome() { return nome; }
 
@@ -18,6 +17,5 @@ public class Categoria {
         return "ID: " + id + ", Nome: " + nome;
     }
 
-    // Setter
     public void setNome(String nome) { this.nome = nome; }
 }

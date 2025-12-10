@@ -8,7 +8,6 @@ import java.time.LocalDate;
 public class Main {
     private static ArvoreAVLGeneric<modelo.Livro, String> arvoreLivros = new ArvoreAVLGeneric<>(modelo.Livro::getIsbn);
     private static ArvoreAVLGeneric<modelo.Autor, Integer> arvoreAutores = new ArvoreAVLGeneric<>(modelo.Autor::getId);
-    // Estruturas para outras entidades
     private static ArvoreAVLGeneric<modelo.Usuario, Integer> arvoreUsuarios = new ArvoreAVLGeneric<>(modelo.Usuario::getMatricula);
     private static ArvoreAVLGeneric<modelo.Categoria, Integer> arvoreCategorias = new ArvoreAVLGeneric<>(modelo.Categoria::getId);
     private static List<Emprestimo> emprestimos = new ArrayList<>();
@@ -18,7 +17,6 @@ public class Main {
     private static int proximoIdCategoria = 1;
 
     public static void main(String[] args) {
-        // --- População Inicial de Dados (para teste) ---
         Autor a1 = new Autor(proximoIdAutor++, "Machado de Assis", "Brasileiro"); arvoreAutores.inserir(a1);
         Autor a2 = new Autor(proximoIdAutor++, "Clarice Lispector", "Brasileira"); arvoreAutores.inserir(a2);
         Categoria c1 = new Categoria(proximoIdCategoria++, "Clássico"); arvoreCategorias.inserir(c1);
@@ -26,12 +24,12 @@ public class Main {
         arvoreUsuarios.inserir(new Usuario(101, "Alice Silva", "alice@lib.com"));
         arvoreUsuarios.inserir(new Usuario(102, "Bruno Costa", "bruno@lib.com"));
 
-        arvoreLivros.inserir(new Livro("978-8578882746", "Dom Casmurro", 1899, a1, c1));
-        arvoreLivros.inserir(new Livro("978-0199535729", "O Alienista", 1882, a1, c1));
-        arvoreLivros.inserir(new Livro("978-0520288285", "A Peste", 1947, new Autor(proximoIdAutor++, "Albert Camus", "Francês"), c1));
-        arvoreLivros.inserir(new Livro("978-0007447990", "Cem Anos de Solidão", 1967, new Autor(proximoIdAutor++, "Gabriel García Márquez", "Colombiano"), c1));
+        arvoreLivros.inserir(new Livro("978-857", "Dom Casmurro", 1899, a1, c1));
+        arvoreLivros.inserir(new Livro("978-019", "O Alienista", 1882, a1, c1));
+        arvoreLivros.inserir(new Livro("978-052", "A Peste", 1947, new Autor(proximoIdAutor++, "Albert Camus", "Francês"), c1));
+        arvoreLivros.inserir(new Livro("978-000", "Cem Anos de Solidão", 1967, new Autor(proximoIdAutor++, "Gabriel García Márquez", "Colombiano"), c1));
         
-        System.out.println("📚 Sistema de Gerenciamento de Biblioteca (AVL)");
+        System.out.println("Sistema de Gerenciamento de Biblioteca (AVL)");
         exibirMenuPrincipal();
     }
 
@@ -64,7 +62,6 @@ public class Main {
         }
     }
     
-    // --- Menus de Entidades ---
 
     private static void menuLivros() {
         int opcao = -1;
@@ -118,7 +115,6 @@ public class Main {
         }
     }
     
-    // --- Funções CRUD Livros (AVL) ---
     
     private static void inserirLivro() {
         System.out.println("\n--- Inserir Livro ---");
@@ -126,7 +122,7 @@ public class Main {
         String isbn = scanner.nextLine();
         
         if (arvoreLivros.buscar(isbn) != null) {
-            System.out.println("❌ Erro: Livro com este ISBN já cadastrado.");
+            System.out.println("Erro: Livro com este ISBN já cadastrado.");
             return;
         }
         
@@ -135,13 +131,11 @@ public class Main {
         System.out.print("Ano de Publicação: ");
         int ano = Integer.parseInt(scanner.nextLine());
 
-        // Para simplificar, usamos o primeiro autor/categoria. O ideal seria uma busca/seleção.
           if (arvoreAutores.listarTodos().isEmpty() || arvoreCategorias.listarTodos().isEmpty()) {
-               System.out.println("⚠️ Cadastre Autores e Categorias primeiro.");
+               System.out.println("Cadastre Autores e Categorias primeiro.");
                return;
            }
 
-              // Para simplicidade, usamos o primeiro autor e categoria disponíveis
               Autor autorSelecionado = arvoreAutores.listarTodos().get(0);
               Categoria categoriaSelecionada = arvoreCategorias.listarTodos().get(0);
 
@@ -155,9 +149,9 @@ public class Main {
         
         Livro encontrado = arvoreLivros.buscar(isbn);
         if (encontrado != null) {
-            System.out.println("✅ Livro Encontrado:\n" + encontrado);
+            System.out.println("Livro Encontrado:\n" + encontrado);
         } else {
-            System.out.println("❌ Livro com ISBN " + isbn + " não encontrado.");
+            System.out.println("Livro com ISBN " + isbn + " não encontrado.");
         }
     }
     
@@ -182,12 +176,12 @@ public class Main {
                 try {
                     livro.setAnoPublicacao(Integer.parseInt(novoAnoStr));
                 } catch (NumberFormatException e) {
-                    System.out.println("⚠️ Ano inválido. Manterá o anterior.");
+                    System.out.println("Ano inválido. Manterá o anterior.");
                 }
             }
-            System.out.println("✅ Livro alterado com sucesso!\n" + livro);
+            System.out.println("Livro alterado com sucesso!\n" + livro);
         } else {
-            System.out.println("❌ Livro com ISBN " + isbn + " não encontrado.");
+            System.out.println("Livro com ISBN " + isbn + " não encontrado.");
         }
     }
     
@@ -204,7 +198,6 @@ public class Main {
         arvoreLivros.visualizarEstrutura();
     }
 
-    // --- CRUD Autores (usando AVL) ---
 
     private static void menuAutores() {
         int opcao = -1;
@@ -257,7 +250,7 @@ public class Main {
         int id = Integer.parseInt(scanner.nextLine());
         Autor autor = arvoreAutores.buscar(id);
         if (autor == null) {
-            System.out.println("❌ Autor não encontrado.");
+            System.out.println("Autor não encontrado.");
             return;
         }
         System.out.print("Novo Nome (vazio para manter): ");
@@ -274,7 +267,7 @@ public class Main {
             Autor novo = new Autor(id, autor.getNome(), nac);
             arvoreAutores.inserir(novo);
         }
-        System.out.println("✅ Autor alterado (recriado). Consulte a lista.");
+        System.out.println("Autor alterado (recriado). Consulte a lista.");
     }
 
     private static void removerAutor() {
@@ -284,7 +277,6 @@ public class Main {
         arvoreAutores.remover(id);
     }
 
-    // --- CRUD Categoria (lista simples) ---
 
     private static void inserirCategoria() {
         System.out.println("\n--- Inserir Categoria ---");
@@ -292,7 +284,7 @@ public class Main {
         String nome = scanner.nextLine();
         Categoria c = new Categoria(proximoIdCategoria++, nome);
         arvoreCategorias.inserir(c);
-        System.out.println("✅ Categoria inserida: " + c.getNome());
+        System.out.println("Categoria inserida: " + c.getNome());
     }
 
     private static void listarCategorias() {
@@ -305,12 +297,12 @@ public class Main {
         System.out.print("ID: ");
         int id = Integer.parseInt(scanner.nextLine());
         Categoria cat = arvoreCategorias.buscar(id);
-        if (cat == null) { System.out.println("❌ Categoria não encontrada."); return; }
+        if (cat == null) { System.out.println("Categoria não encontrada."); return; }
         System.out.print("Novo Nome (vazio para manter): ");
         String novo = scanner.nextLine();
         if (!novo.isEmpty()) {
             cat.setNome(novo);
-            System.out.println("✅ Categoria alterada.");
+            System.out.println("Categoria alterada.");
         }
     }
 
@@ -319,10 +311,9 @@ public class Main {
         System.out.print("ID: ");
         int id = Integer.parseInt(scanner.nextLine());
         arvoreCategorias.remover(id);
-        System.out.println("✅ Se existia, categoria removida.");
+        System.out.println("Se existia, categoria removida.");
     }
 
-    // --- CRUD Usuários (lista simples) ---
 
     private static void menuUsuarios() {
         int opcao = -1;
@@ -357,7 +348,7 @@ public class Main {
         System.out.print("Email: ");
         String email = scanner.nextLine();
         arvoreUsuarios.inserir(new Usuario(mat, nome, email));
-        System.out.println("✅ Usuário cadastrado.");
+        System.out.println("Usuário cadastrado.");
     }
 
     private static void listarUsuarios() {
@@ -370,14 +361,14 @@ public class Main {
         System.out.print("Matrícula: ");
         int mat = Integer.parseInt(scanner.nextLine());
         Usuario u = arvoreUsuarios.buscar(mat);
-        if (u == null) { System.out.println("❌ Usuário não encontrado."); return; }
+        if (u == null) { System.out.println("Usuário não encontrado."); return; }
         System.out.print("Novo Nome (vazio para manter): ");
         String nome = scanner.nextLine();
         System.out.print("Novo Email (vazio para manter): ");
         String email = scanner.nextLine();
         if (!nome.isEmpty()) u.setNome(nome);
         if (!email.isEmpty()) u.setEmail(email);
-        System.out.println("✅ Usuário alterado.");
+        System.out.println("Usuário alterado.");
     }
 
     private static void removerUsuario() {
@@ -385,17 +376,15 @@ public class Main {
         System.out.print("Matrícula: ");
         int mat = Integer.parseInt(scanner.nextLine());
         arvoreUsuarios.remover(mat);
-        System.out.println("✅ Se existia, usuário removido.");
+        System.out.println("Se existia, usuário removido.");
     }
 
-    // --- Empréstimos adicionais ---
 
     private static void listarEmprestimos() {
         System.out.println("\n--- Empréstimos Registrados ---");
         for (Emprestimo e : emprestimos) System.out.println(e);
     }
 
-    // --- Funções Gerenciamento de Empréstimos ---
 
     private static void realizarEmprestimo() {
         System.out.println("\n--- Realizar Empréstimo ---");
@@ -408,12 +397,12 @@ public class Main {
         Usuario usuario = arvoreUsuarios.buscar(matricula);
 
         if (livro == null || usuario == null) {
-            System.out.println("❌ Livro ou Usuário não encontrado.");
+            System.out.println("Livro ou Usuário não encontrado.");
             return;
         }
         
         if (livro.isEmprestado()) {
-            System.out.println("❌ Livro já emprestado.");
+            System.out.println("Livro já emprestado.");
             return;
         }
 
@@ -421,10 +410,10 @@ public class Main {
         LocalDate devolucaoPrevista = hoje.plusDays(7);
         Emprestimo novoEmprestimo = new Emprestimo(livro, usuario, hoje, devolucaoPrevista);
         
-        livro.setEmprestado(true); // Marca o livro como emprestado
+        livro.setEmprestado(true); 
         emprestimos.add(novoEmprestimo);
         
-        System.out.println("✅ Empréstimo registrado:\n" + novoEmprestimo);
+        System.out.println("Empréstimo registrado:\n" + novoEmprestimo);
     }
     
     private static void devolverLivro() {
@@ -435,13 +424,12 @@ public class Main {
         Livro livro = arvoreLivros.buscar(isbn);
         
         if (livro == null || !livro.isEmprestado()) {
-            System.out.println("❌ Livro não encontrado ou não está emprestado.");
+            System.out.println("Livro não encontrado ou não está emprestado.");
             return;
         }
         
-        livro.setEmprestado(false); // Marca o livro como devolvido
-        // Na prática, o empréstimo seria removido ou marcado como 'concluído'
+        livro.setEmprestado(false); 
         
-        System.out.println("✅ Livro '" + livro.getTitulo() + "' devolvido com sucesso.");
+        System.out.println("Livro '" + livro.getTitulo() + "' devolvido com sucesso.");
     }
 }

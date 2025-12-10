@@ -3,10 +3,11 @@
 Este projeto implementa um sistema básico de gerenciamento de biblioteca usando Programação Orientada a Objetos (POO) e uma implementação genérica de Árvore AVL.
 
 Resumo rápido
- - Linguagem: Java
- - Entidades: `Livro`, `Usuario`, `Autor`, `Categoria`, `Emprestimo`
- - Estrutura: `ArvoreAVLGeneric<T,K>` (inserir, buscar, remover, listar, visualizar)
- - Interface: CLI em `src/Main.Java`
+
+- Linguagem: Java
+- Entidades: `Livro`, `Usuario`, `Autor`, `Categoria`, `Emprestimo`
+- Estrutura: `ArvoreAVLGeneric<T,K>` (inserir, buscar, remover, listar, visualizar)
+- Interface: CLI em `src/Main.Java`
 
 O repositório contém o código-fonte em `src/` e documentação mínima para executar o sistema localmente.
 
@@ -23,6 +24,7 @@ O repositório contém o código-fonte em `src/` e documentação mínima para e
 Pré-requisito: JDK instalado e `javac`/`java` no `PATH`.
 
 Unix / macOS / WSL:
+
 ```bash
 cd src
 javac -d ../bin modelo/*.java arvore/*.java Main.java
@@ -31,6 +33,7 @@ java -cp bin Main
 ```
 
 Windows PowerShell:
+
 ```powershell
 cd src
 # Use cmd /c para evitar expansão de glob do PowerShell
@@ -57,6 +60,6 @@ Alternativa: abra o projeto em uma IDE (IntelliJ, Eclipse) e execute a classe `M
 
 ## Componentes do Grupo
 
-* Matheus de Amorim Santana
-* Israel Hall Leighton
-* Fernanda Dantas
+- Matheus de Amorim Santana
+- Israel Hall Leighton
+- Fernanda Dantas de Carvalho Fernandes

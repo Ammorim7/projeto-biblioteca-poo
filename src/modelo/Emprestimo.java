@@ -15,7 +15,6 @@ public class Emprestimo {
         this.dataDevolucaoPrevista = dataDevolucaoPrevista;
     }
 
-    // Getters
     public Livro getLivro() { return livro; }
     public Usuario getUsuario() { return usuario; }
 

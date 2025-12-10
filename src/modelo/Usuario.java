@@ -11,13 +11,11 @@ public class Usuario {
         this.email = email;
     }
 
-    // Getters
     public int getMatricula() { return matricula; }
     public String getNome() { return nome; }
 
     public String getEmail() { return email; }
 
-    // Setters
     public void setNome(String nome) { this.nome = nome; }
     public void setEmail(String email) { this.email = email; }
 

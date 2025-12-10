@@ -44,7 +44,7 @@ public class ArvoreAVLGeneric<T, K extends Comparable<K>> {
 
     public void inserir(T item) {
         raiz = inserirRec(raiz, item);
-        try { System.out.println("✅ Inserido: " + keyExtractor.apply(item)); } catch (Exception e) {}
+        try { System.out.println("Inserido: " + keyExtractor.apply(item)); } catch (Exception e) {}
     }
 
     private No inserirRec(No no, T item) {
@@ -53,7 +53,7 @@ public class ArvoreAVLGeneric<T, K extends Comparable<K>> {
         int cmp = chaveItem.compareTo(no.chave());
         if (cmp < 0) no.esquerda = inserirRec(no.esquerda, item);
         else if (cmp > 0) no.direita = inserirRec(no.direita, item);
-        else { System.err.println("❌ Chave já existe: " + chaveItem); return no; }
+        else { System.err.println("Chave já existe: " + chaveItem); return no; }
 
         atualizarAltura(no);
         int balance = fator(no);
@@ -80,14 +80,14 @@ public class ArvoreAVLGeneric<T, K extends Comparable<K>> {
     private No minValor(No no) { No atual = no; while (atual.esquerda != null) atual = atual.esquerda; return atual; }
 
     private No removerRec(No no, K chave) {
-        if (no == null) { System.out.println("❌ Chave não encontrada: " + chave); return no; }
+        if (no == null) { System.out.println("Chave não encontrada: " + chave); return no; }
         int cmp = chave.compareTo(no.chave());
         if (cmp < 0) no.esquerda = removerRec(no.esquerda, chave);
         else if (cmp > 0) no.direita = removerRec(no.direita, chave);
         else {
             if (no.esquerda == null || no.direita == null) {
                 No temp = (no.esquerda != null) ? no.esquerda : no.direita;
-                if (temp == null) { temp = null; System.out.println("🗑️ Removido: " + chave); }
+                if (temp == null) { temp = null; System.out.println("Removido: " + chave); }
                 else no = temp;
             } else {
                 No temp = minValor(no.direita);

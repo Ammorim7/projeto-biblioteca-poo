@@ -1,15 +1,13 @@
 package modelo;
 
-// Implementa Comparable para permitir a comparação na Árvore AVL pelo ISBN
 public class Livro implements Comparable<Livro> {
-    private String isbn; // Chave de busca principal
+    private String isbn;
     private String titulo;
     private int anoPublicacao;
     private Autor autor;
     private Categoria categoria;
     private boolean emprestado;
 
-    // Construtor
     public Livro(String isbn, String titulo, int anoPublicacao, Autor autor, Categoria categoria) {
         this.isbn = isbn;
         this.titulo = titulo;
@@ -19,7 +17,6 @@ public class Livro implements Comparable<Livro> {
         this.emprestado = false;
     }
 
-    // --- Getters e Setters ---
     public String getIsbn() { return isbn; }
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
@@ -30,7 +27,6 @@ public class Livro implements Comparable<Livro> {
     public boolean isEmprestado() { return emprestado; }
     public void setEmprestado(boolean emprestado) { this.emprestado = emprestado; }
 
-    // Implementação da comparação baseada no ISBN
     @Override
     public int compareTo(Livro outroLivro) {
         return this.isbn.compareTo(outroLivro.isbn);
